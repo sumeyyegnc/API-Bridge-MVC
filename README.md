@@ -1,7 +1,5 @@
 # 🏥 ClinicManager API MVC Bridge
 
-# 🏥 ClinicManager API MVC Bridge
-
 A modern **ASP.NET Core MVC** application that acts as a bridge between end users and the **ClinicManager Web API**. Instead of interacting directly with the database, the application communicates with RESTful API endpoints using **HttpClient**, providing a secure, scalable, and maintainable architecture.
 The project demonstrates how an MVC application can consume Web API services to perform 
 **CRUD (Create, Read, Update, Delete)** operations while maintaining a clean separation between the presentation layer and the backend services. 
