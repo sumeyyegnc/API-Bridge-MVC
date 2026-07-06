@@ -1,4 +1,4 @@
-﻿using ClinicManagerMvc.Data;
+using ClinicManagerMvc.Data;
 using ClinicManagerMvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +29,18 @@ namespace ClinicManagerMvc.Controllers
         public async Task<IActionResult> HastaListesi()
         {
             var client = _httpClientFactory.CreateClient("ClinicApi");
-            var response = await client.GetAsync("Hasta");
+            var response = await client.GetAsync("Hasta/GetHastalar");
             var json = await response.Content.ReadAsStringAsync();
-            var hastalar = JsonConvert.DeserializeObject<List<dynamic>>(json);
-            return Json(hastalar);
+            return Content(json, "application/json");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DoktorListesi()
+        {
+            var client = _httpClientFactory.CreateClient("ClinicApi");
+            var response = await client.GetAsync("Doktor/GetDoktorlar");
+            var json = await response.Content.ReadAsStringAsync();
+            return Content(json, "application/json");
         }
 
         [HttpGet]
