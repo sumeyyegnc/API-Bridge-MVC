@@ -1,0 +1,43 @@
+﻿@model List<Randevu>
+@{
+    ViewData["Title"] = "Randevular";
+}
+
+<h3>Randevu Listesi</h3>
+<a asp-action="Create" class="btn btn-primary mb-3">Yeni Randevu</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Poliklinik</th>
+            <th>Hasta Id</th>
+            <th>Doktor Id</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr data-id="@r.RandevuId">
+                <td>@r.RandevuId</td>
+                <td>@r.Poliklinik?.Ad</td>
+                <td>@r.HastaId</td>
+                <td>@r.DoktorId</td>
+                <td>@r.Tarih.ToString("dd.MM.yyyy")</td>
+                <td>@r.Saat</td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-action="Delete" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@r.RandevuId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

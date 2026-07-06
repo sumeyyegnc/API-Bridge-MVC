@@ -1,0 +1,70 @@
+﻿@model List<Poliklinik>
+@{
+    ViewData["Title"] = "Poliklinikler";
+}
+
+<h3>Poliklinik Listesi</h3>
+
+<div class="mb-3 row">
+    <div class="col-3">
+        <input type="text" id="yeniPoliklinikAd" class="form-control" placeholder="Poliklinik adı" />
+    </div>
+    <div class="col-2">
+        <button id="btnEkle" class="btn btn-primary">Ekle</button>
+    </div>
+</div>
+
+<table class="table table-bordered" id="poliklinikTable">
+    <thead>
+        <tr><th>Id</th><th>Ad</th><th>İşlem</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr data-id="@p.PoliklinikId">
+                <td>@p.PoliklinikId</td>
+                <td>@p.Ad</td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <button class="btn btn-danger btn-sm btnSil">Sil</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#btnEkle').click(function () {
+                var ad = $('#yeniPoliklinikAd').val();
+                if (!ad) return;
+
+                $.ajax({
+                    url: '/Poliklinik/Create',
+                    type: 'POST',
+                    data: { ad: ad },
+                    success: function (res) {
+                        if (res.success) location.reload();
+                    }
+                });
+            });
+
+            $('.btnSil').click(function () {
+                var id = $(this).closest('tr').data('id');
+                if (!confirm('Silmek istediğine emin misin?')) return;
+
+                $.ajax({
+                    url: '/Poliklinik/Delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        if (res.success) location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+}

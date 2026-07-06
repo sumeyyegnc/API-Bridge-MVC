@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Yeni Randevu";
+    var poliklinikler = ViewBag.Poliklinikler as List<Poliklinik>;
+}
+
+<h3>Yeni Randevu Oluştur</h3>
+
+<div class="mb-3">
+    <label>Poliklinik</label>
+    <select id="poliklinikSelect" class="form-control">
+        @foreach (var p in poliklinikler)
+        {
+            <option value="@p.PoliklinikId">@p.Ad</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3">
+    <label>Hasta</label>
+    <select id="hastaSelect" class="form-control"></select>
+</div>
+
+<div class="mb-3">
+    <label>Doktor</label>
+    <select id="doktorSelect" class="form-control"></select>
+</div>
+
+<div class="mb-3">
+    <label>Tarih</label>
+    <input type="date" id="tarih" class="form-control" />
+</div>
+
+<div class="mb-3">
+    <label>Saat</label>
+    <input type="time" id="saat" class="form-control" />
+</div>
+
+<button id="btnKaydet" class="btn btn-success">Kaydet</button>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // API'den hasta listesini çek
+            $.ajax({
+                url: '/Randevu/HastaListesi',
+                type: 'GET',
+                success: function (data) {
+                    $.each(data, function (i, hasta) {
+                        $('#hastaSelect').append(
+                            `<option value="${hasta.hastaId}">${hasta.ad} ${hasta.soyad}</option>`
+                        );
+                    });
+                },
+                error: function () {
+                    alert('API\'den hasta listesi alınamadı. API çalışıyor mu kontrol et.');
+                }
+            });
+
+            // API'den doktor listesini çek
+            $.ajax({
+                url: '/Randevu/DoktorListesi',
+                type: 'GET',
+                success: function (data) {
+                    $.each(data, function (i, doktor) {
+                        $('#doktorSelect').append(
+                            `<option value="${doktor.doktorId}">${doktor.ad} ${doktor.soyad} - ${doktor.brans}</option>`
+                        );
+                    });
+                },
+                error: function () {
+                    alert('API\'den doktor listesi alınamadı.');
+                }
+            });
+
+            $('#btnKaydet').click(function () {
+                var randevu = {
+                    poliklinikId: $('#poliklinikSelect').val(),
+                    hastaId: $('#hastaSelect').val(),
+                    doktorId: $('#doktorSelect').val(),
+                    tarih: $('#tarih').val(),
+                    saat: $('#saat').val() + ':00'
+                };
+
+                $.ajax({
+                    url: '/Randevu/Create',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(randevu),
+                    success: function (res) {
+                        if (res.success) {
+                            window.location.href = '/Randevu/Index';
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Kayıt sırasında hata oluştu: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}
